@@ -1,0 +1,13 @@
+[project]
+name = "distributed-backup-sdn"
+version = "0.1.0"
+description = "Distributed backup application with TCP transfer, chunking, replication, and restore"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+    "integration: tests that use real localhost TCP servers (still no root/Mininet required)",
+]
