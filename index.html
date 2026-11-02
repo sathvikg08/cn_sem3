@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BACKUP-NET · Storage & SDN</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+ <div class="brand"><span class="brand-icon">B</span><div><b>BACKUP-NET</b><small>Distributed backup</small></div></div>
+ <div class="nav-label">PROJECT MODULES</div>
+ <a href="#storage" class="nav active" data-tab="storage"><span>▤</span> Distributed Storage</a>
+ <a href="#topology" class="nav" data-tab="topology"><span>⌘</span> SDN Topology</a>
+ <div class="side-bottom"><span class="pulse"></span><div><b>System workspace</b><small>Stage 3 + Stage 4</small></div></div>
+</aside>
+<main>
+ <header><div><div class="eyebrow">COMPUTER NETWORKS · SEMESTER PROJECT</div><h1 id="page-title">Distributed Storage</h1><p id="page-sub">Inspect file replicas, chunks and integrity across both backup nodes.</p></div><div class="header-right"><span class="mode" id="mode-pill">DEMO DATA</span><button class="btn secondary" id="refresh">↻ Refresh status</button></div></header>
+ <section id="storage" class="page">
+  <div class="metrics">
+   <article class="metric"><small>BACKUP SERVERS ONLINE</small><strong id="online-count">2 <i>/ 2</i></strong><span class="good">● Storage nodes</span></article>
+   <article class="metric"><small>FILES BACKED UP</small><strong id="file-count">3</strong><span>Across available nodes</span></article>
+   <article class="metric"><small>CHUNKS STORED</small><strong id="chunk-count">12</strong><span>1 MiB default chunk size</span></article>
+   <article class="metric"><small>REPLICATION HEALTH</small><strong id="replication-health">Synced</strong><span class="good">● SHA-256 verified</span></article>
+  </div>
+  <div class="section-head"><div><h2>Storage nodes</h2><p>Independent servers with their own chunk storage and SQLite metadata.</p></div><span class="tag">2 NODE CONFIGURATION</span></div>
+  <div class="server-grid">
+   <article class="server-card"><div class="server-top"><div class="server-symbol">A</div><div class="server-name"><b>Backup Server A</b><small>Primary · TCP :9101</small></div><span class="status online" id="status-a">ONLINE</span></div><div class="server-stats"><div><small>Stored files</small><b id="files-a">3</b></div><div><small>Chunks</small><b id="chunks-a">12</b></div><div><small>Role</small><b>Primary</b></div></div><div class="server-foot"><span>Replication target</span><b>Server B →</b></div></article>
+   <article class="server-card"><div class="server-top"><div class="server-symbol replica">B</div><div class="server-name"><b>Backup Server B</b><small>Replica · TCP :9102</small></div><span class="status online" id="status-b">ONLINE</span></div><div class="server-stats"><div><small>Stored files</small><b id="files-b">3</b></div><div><small>Chunks</small><b id="chunks-b">12</b></div><div><small>Role</small><b>Replica</b></div></div><div class="server-foot"><span>Replica state</span><b id="replica-state">In sync ✓</b></div></article>
+  </div>
+  <div class="section-head"><div><h2>Backed-up files</h2><p>File metadata and replication verification.</p></div><span class="tag">FILE INVENTORY</span></div>
+  <div class="table-wrap"><table><thead><tr><th>FILE NAME</th><th>FILE ID</th><th>SIZE</th><th>CHUNKS</th><th>REPLICATION</th><th>INTEGRITY</th></tr></thead><tbody id="file-rows"><tr><td><b>project_report.pdf</b></td><td class="mono">f-7a31c2</td><td>5.0 MB</td><td>5</td><td><span class="good">● Replicated</span></td><td><span class="good">✓ SHA-256</span></td></tr><tr><td><b>dataset.csv</b></td><td class="mono">f-8b42d1</td><td>3.2 MB</td><td>4</td><td><span class="good">● Replicated</span></td><td><span class="good">✓ SHA-256</span></td></tr><tr><td><b>presentation.pptx</b></td><td class="mono">f-9c53e0</td><td>2.1 MB</td><td>3</td><td><span class="good">● Replicated</span></td><td><span class="good">✓ SHA-256</span></td></tr></tbody></table></div>
+  <div class="note"><b>How replication works</b><p>After Server A receives all chunks, it verifies the complete file and sends the same file ID and chunk data to Server B. The client can later restore that file from B if A is unavailable.</p></div>
+ </section>
+ <section id="topology" class="page hidden">
+  <div class="topology-toolbar"><div><span class="tag">NETWORK MAP</span><h2>Live SDN topology</h2><p>Two alternative paths connect the client to the backup network.</p></div><div class="controls"><button class="btn danger" id="fail-link">⚡ Simulate Path A link failure</button><button class="btn secondary" id="restore-link">↻ Restore network</button></div></div>
+  <div class="topology-card">
+   <div class="topo-status"><span class="good" id="network-state">● All links active</span><span class="muted" id="route-state">Current route: Path A</span></div>
+   <svg id="network-svg" viewBox="0 0 900 490" role="img" aria-label="Network topology showing client, switches, two paths, SDN controller and backup servers">
+    <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#8795aa"/></marker></defs>
+    <path class="link active-link" id="l-client" d="M115 235 H210"/><path class="link path-a" id="l-a1" d="M270 235 L365 130 H465"/><path class="link path-a" id="l-a2" d="M525 130 L630 235 H715"/>
+    <path class="link path-b" id="l-b1" d="M270 255 L365 355 H465"/><path class="link path-b" id="l-b2" d="M525 355 L630 255 H715"/>
+    <path class="link controller-link" d="M450 55 V85 M450 85 H240 V205 M450 85 H690 V205"/>
+    <g class="node" transform="translate(35 205)"><rect width="80" height="60" rx="12"/><text x="40" y="26">CLIENT</text><text class="sub" x="40" y="43">H1</text></g>
+    <g class="node switch" transform="translate(210 205)"><rect width="60" height="60" rx="12"/><text x="30" y="26">S1</text><text class="sub" x="30" y="43">SWITCH</text></g>
+    <g class="node switch" transform="translate(465 100)"><rect width="60" height="60" rx="12"/><text x="30" y="26">S2</text><text class="sub" x="30" y="43">PATH A</text></g>
+    <g class="node switch" transform="translate(465 325)"><rect width="60" height="60" rx="12"/><text x="30" y="26">S3</text><text class="sub" x="30" y="43">PATH B</text></g>
+    <g class="node switch" transform="translate(715 205)"><rect width="60" height="60" rx="12"/><text x="30" y="26">S4</text><text class="sub" x="30" y="43">EDGE</text></g>
+    <g class="node server-node" transform="translate(810 155)"><rect width="80" height="65" rx="12"/><text x="40" y="27">SERVER A</text><text class="sub" x="40" y="46">PRIMARY</text></g>
+    <g class="node server-node" transform="translate(810 265)"><rect width="80" height="65" rx="12"/><text x="40" y="27">SERVER B</text><text class="sub" x="40" y="46">REPLICA</text></g>
+    <path class="link server-link" d="M775 225 L810 188 M775 245 L810 297"/>
+    <g class="node controller-node" transform="translate(380 15)"><rect width="140" height="50" rx="12"/><text x="70" y="22">SDN CONTROLLER</text><text class="sub" x="70" y="38">OpenFlow · OS-Ken</text></g>
+    <text class="path-label" x="355" y="105">PATH A · PRIMARY</text><text class="path-label" x="355" y="405">PATH B · ALTERNATE</text>
+   </svg>
+   <div class="legend"><span><i class="line-key a"></i> Path A · primary</span><span><i class="line-key b"></i> Path B · alternate</span><span><i class="line-key c"></i> Controller connection</span></div>
+  </div>
+  <div class="network-bottom">
+   <article class="info-card"><small>SDN CONTROLLER</small><h3 id="controller-status">Connected (demo)</h3><p>Responsible for monitoring network state and installing forwarding rules on switches.</p></article>
+   <article class="info-card"><small>ACTIVE ROUTE</small><h3 id="active-route">Path A</h3><p id="route-description">Primary path selected. Traffic can reach the backup network.</p></article>
+   <article class="info-card"><small>FAILURE EVENT</small><h3 id="failure-event">No failure detected</h3><p id="failure-description">Use the controls to illustrate alternate-path selection.</p></article>
+  </div>
+  <div class="note warning"><b>Important demonstration note</b><p>These controls change the visual demo state only unless you connect them to your Mininet/OS-Ken backend. A real link failure requires the controller to detect the event and install Path B flow rules. An interrupted TCP transfer also needs application-level chunk retry; changing routes does not preserve an existing TCP connection.</p></div>
+  <div class="event-log"><h3>Network event log</h3><div id="events"><p><time>READY</time> Topology view initialized · demo state</p></div></div>
+ </section>
+ <footer>Distributed Backup System <span>·</span> Stage 3 &amp; Stage 4 frontend</footer>
+</main>
+</div>
+<script src="app.js"></script>
+</body></html>
