@@ -6,3 +6,6 @@ __pycache__/
 data/
 *.db
 *.sqlite3
+
+# SDN Python virtual environment
+.venv-sdn/
