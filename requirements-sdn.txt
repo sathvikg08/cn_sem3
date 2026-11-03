@@ -1,2 +1,0 @@
-os-ken>=4.0
-# plus system packages: mininet openvswitch-switch iproute2 ethtool iputils-ping
